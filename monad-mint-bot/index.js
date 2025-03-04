@@ -1,4 +1,4 @@
-const Web3 = require('web3');
+const { Web3 } = require('web3');
 const TelegramBot = require('node-telegram-bot-api');
 const express = require('express');
 const crypto = require('crypto');
@@ -11,7 +11,7 @@ const CONFIG = {
   RPC_URL: 'https://testnet-rpc.monad.xyz',
   EXPLORER_URL: 'https://testnet.monadexplorer.com/tx/',
   CHAIN_ID: 10143,
-  GAS_PRICE: '52000000000', // 1 Gwei in wei
+  CONFIG.GAS_PRICE = web3.utils.toWei('1', 'gwei');
   GAS_LIMIT: 500000,
 
   // Telegram Settings
