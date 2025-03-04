@@ -25,6 +25,72 @@ const CONFIG = {
   MAX_RETRY_COUNT: 2
 };
 
+// TelegramFormatter: Utility for formatting messages in Telegram's Markdown
+const TelegramFormatter = {
+  bold: text => `*${text}*`,
+  italic: text => `_${text}_`,
+  code: text => `\`${text}\``,
+  pre: (text, language = '') => `\`\`\`${language}\n${text}\n\`\`\``,
+  link: (text, url) => `[${text}](${url})`,
+  
+  // Message templates
+  transactionSuccess: (txHash, address) => {
+    const explorerUrl = `${CONFIG.EXPLORER_URL}${txHash}`;
+    return `✅ *Mint successful!*\n` +
+           `From: \`${address}\`\n` +
+           `[View on Explorer](${explorerUrl})`;
+  },
+  
+  transactionFailed: (error, address) => {
+    return `❌ *Transaction Failed*\n` +
+           `From: \`${address}\`\n` +
+           `Error: \`${error.substring(0, 100)}\``;
+  },
+  
+  walletList: (wallets) => {
+    if (wallets.length === 0) return '📝 No wallets configured';
+    
+    let message = '📝 *Configured Wallets*\n\n';
+    wallets.forEach((wallet, index) => {
+      const status = wallet.active ? '✅ Active' : '❌ Inactive';
+      const lastUsed = wallet.lastUsed ? 
+        new Date(wallet.lastUsed).toLocaleString() : 'Never';
+      
+      message += `*${index + 1}. ${wallet.label}*\n` +
+                 `Address: \`${wallet.address}\`\n` +
+                 `Status: ${status}\n` +
+                 `Last Used: ${lastUsed}\n\n`;
+    });
+    
+    return message;
+  },
+  
+  supplyStatus: (total, max) => {
+    const percentage = ((total / max) * 100).toFixed(2);
+    const remaining = max - total;
+    
+    return `📊 *Supply Status*\n\n` +
+           `Current: ${total}/${max} (${percentage}%)\n` +
+           `Remaining: ${remaining}\n`;
+  },
+  
+  helpText: () => `
+*🤖 MONAD Mint Bot*
+
+*Commands:*
+/mint - Start minting with all active wallets
+/mintwallet [address] - Mint from a specific wallet
+/wallets - List all configured wallets
+/addwallet [privateKey] [label] - Add a new wallet
+/togglewallet [address] - Enable/disable a wallet
+/removewallet [address] - Remove a wallet
+/status - Check contract supply
+/history [limit] - View recent transactions
+/wallethistory [address] - View wallet transactions
+/settings - View or change bot settings
+`
+};
+
 // Initialize Web3 and Bot
 const web3 = new Web3(CONFIG.RPC_URL);
 const bot = new TelegramBot(CONFIG.TELEGRAM_TOKEN, { polling: true });
