@@ -28,6 +28,17 @@ const CONFIG = {
 // Initialize Web3 and Bot
 const web3 = new Web3(CONFIG.RPC_URL);
 const bot = new TelegramBot(CONFIG.TELEGRAM_TOKEN, { polling: true });
+// Add polling error handler
+bot.on('polling_error', (error) => {
+  console.error('Telegram polling error:', error.code, error.message || error);
+  // If you're using the logger
+  if (logger) {
+    logger.error('telegram_polling_error', { 
+      code: error.code,
+      message: error.message || String(error)
+    });
+  }
+});
 const app = express();
 
 // ========== WALLET ENCRYPTION ========== //
@@ -490,18 +501,6 @@ bot.onText(/\/wallethistory (.+)/, (msg, match) => {
     disable_web_page_preview: true
   });
 });
-const bot = new TelegramBot(CONFIG.TELEGRAM_TOKEN, {polling: true});
-// Add this polling error handler right after
-bot.on('polling_error', (error) => {
-  console.error('Telegram polling error:', error.code, error.message || error);
-  if (logger) {
-    logger.error('telegram_polling_error', { 
-      code: error.code,
-      message: error.message || String(error)
-    });
-  }
-});
-
 // ========== SERVER SETUP ========== //
 app.get('/', (req, res) => res.send('MONAD Mint Bot 🚀'));
 app.listen(3000, () => console.log('Server running on port 3000'));
