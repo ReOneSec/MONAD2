@@ -157,38 +157,6 @@ class WalletManager {
       this.saveWallets();
     }
   }
-  
-  migrateWallets(legacyWallets) {
-    let migrated = 0;
-    
-    legacyWallets.forEach((privateKey, index) => {
-      try {
-        // Skip if not a valid key
-        if (!Validator.isValidPrivateKey(privateKey)) {
-          logger.warn('Invalid wallet key during migration', { index });
-          return;
-        }
-        
-        // Get the address to check if already exists
-        const account = web3.eth.accounts.privateKeyToAccount(privateKey);
-        const exists = this.wallets.some(w => 
-          w.address.toLowerCase() === account.address.toLowerCase()
-        );
-        
-        if (!exists) {
-          this.addWallet(privateKey, `Migrated Wallet ${index + 1}`);
-          migrated++;
-        }
-      } catch (error) {
-        logger.error('Wallet migration failed', { 
-          index, 
-          error: error.message 
-        });
-      }
-    });
-    
-    return migrated;
-  }
 }
 
 module.exports = WalletManager;
