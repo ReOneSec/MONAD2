@@ -1,12 +1,29 @@
 // transaction.js
 const fs = require('fs');
 const { Web3 } = require('web3');
-const { CONFIG, CONTRACT_ABI } = require('./config');
+const { CONFIG } = require('./config');
 const { logger } = require('./logger');
 
-// Initialize Web3 and contract
+// Initialize Web3
 const web3 = new Web3(CONFIG.RPC_URL);
-const contract = new web3.eth.Contract(CONTRACT_ABI, CONFIG.CONTRACT_ADDRESS);
+
+// Initialize contract with current config
+let contract = new web3.eth.Contract(CONFIG.CONTRACT_ABI, CONFIG.CONTRACT_ADDRESS);
+
+// Function to initialize/update the contract
+function initializeContract(address = CONFIG.CONTRACT_ADDRESS, abi = CONFIG.CONTRACT_ABI) {
+  try {
+    contract = new web3.eth.Contract(abi, address);
+    logger.info('Contract initialized', { address });
+    return contract;
+  } catch (error) {
+    logger.error('Contract initialization failed', { error: error.message });
+    throw error;
+  }
+}
+
+// Initialize contract with current configuration
+initializeContract();
 
 class TransactionManager {
   constructor() {
@@ -140,10 +157,16 @@ class TransactionManager {
       throw error;
     }
   }
+  
+  // Method to get mint data
+  getMintData() {
+    return contract.methods.mint().encodeABI();
+  }
 }
 
 module.exports = {
   web3,
   contract,
+  initializeContract,
   TransactionManager
 };
