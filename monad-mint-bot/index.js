@@ -491,9 +491,6 @@ bot.onText(/\/wallethistory (.+)/, (msg, match) => {
   });
 });
 const bot = new TelegramBot(CONFIG.TELEGRAM_TOKEN, {polling: true});
-// Initialize Telegram Bot
-const bot = new TelegramBot(CONFIG.TELEGRAM_TOKEN, {polling: true});
-
 // Add this polling error handler right after
 bot.on('polling_error', (error) => {
   console.error('Telegram polling error:', error.code, error.message || error);
