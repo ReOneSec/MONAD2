@@ -490,6 +490,17 @@ bot.onText(/\/wallethistory (.+)/, (msg, match) => {
     disable_web_page_preview: true
   });
 });
+// bot instance
+bot.on('polling_error', (error) => {
+  console.error('Telegram polling error:', error.code, error.message || error);
+  // If you're using the logger
+  if (logger) {
+    logger.error('telegram_polling_error', { 
+      code: error.code,
+      message: error.message || String(error)
+    });
+  }
+});
 
 // ========== SERVER SETUP ========== //
 app.get('/', (req, res) => res.send('MONAD Mint Bot 🚀'));
