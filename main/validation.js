@@ -45,6 +45,47 @@ const Validator = {
       gasPrice: gasPriceWei,
       gasLimit: Number(gasLimit)
     };
+  },
+
+  // Validate JSON ABI
+  isValidABI(abiString) {
+    try {
+      const abi = JSON.parse(abiString);
+      
+      // Basic validation: check if it's an array
+      if (!Array.isArray(abi)) {
+        return false;
+      }
+      
+      // Check if it contains required functions for our bot
+      const hasMint = abi.some(item => 
+        item.type === 'function' && 
+        item.name === 'mint'
+      );
+      
+      const hasTotalSupply = abi.some(item => 
+        item.type === 'function' && 
+        item.name === 'totalSupply' && 
+        item.stateMutability === 'view'
+      );
+      
+      const hasMaxSupply = abi.some(item => 
+        item.type === 'function' && 
+        item.name === 'MAX_SUPPLY' && 
+        item.stateMutability === 'view'
+      );
+      
+      // At minimum, we need the mint function
+      if (!hasMint) {
+        return false;
+      }
+      
+      // Return true even if not all view functions are present
+      // This allows for flexibility in contract implementation
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 };
 
