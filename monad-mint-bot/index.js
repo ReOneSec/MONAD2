@@ -11,7 +11,7 @@ const CONFIG = {
   RPC_URL: 'https://testnet-rpc.monad.xyz',
   EXPLORER_URL: 'https://testnet.monadexplorer.com/tx/',
   CHAIN_ID: 10143,
-  GAS_PRICE = web3.utils.toWei('1', 'gwei'),
+  GAS_PRICE: '1000000000', // 1 Gwei in wei
   GAS_LIMIT: 500000,
 
   // Telegram Settings
