@@ -52,6 +52,18 @@ const TelegramFormatter = {
            `Remaining: ${remaining}\n`;
   },
   
+  contractStatus: (address) => {
+    return `🔄 *Contract Information*\n\n` +
+           `Address: \`${address}\`\n`;
+  },
+  
+  contractUpdated: (address) => {
+    return `✅ *Contract Updated*\n\n` +
+           `New Address: \`${address}\`\n` +
+           `ABI: Updated successfully\n\n` +
+           `The contract has been updated and is ready for use.`;
+  },
+  
   helpText: () => `
 *🤖 MONAD Mint Bot*
 
@@ -63,6 +75,7 @@ const TelegramFormatter = {
 /togglewallet [address] - Enable/disable a wallet
 /removewallet [address] - Remove a wallet
 /status - Check contract supply
+/contract [address] [abi] - Update contract address and ABI
 /history [limit] - View recent transactions
 /wallethistory [address] - View wallet transactions
 /settings - View or change bot settings
